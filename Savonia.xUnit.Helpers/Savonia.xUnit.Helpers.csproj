@@ -7,6 +7,7 @@
 		<RootNamespace>Savonia.xUnit.Helpers</RootNamespace>
 		<PackageId>Savonia.xUnit.Helpers</PackageId>
 		<IsPackable>true</IsPackable>
+		<PackageOutputPath>./nupkg</PackageOutputPath>
 		<Version>0.0.22</Version>
 		<Authors>Mikko Pääkkönen</Authors>
 		<Company>Savonia University of Applied Sciences</Company>
