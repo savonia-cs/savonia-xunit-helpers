@@ -9,17 +9,27 @@ using Newtonsoft.Json.Linq;
 
 namespace Savonia.xUnit.Helpers;
 
+// Modelled after <see href="https://andrewlock.net/creating-a-custom-xunit-theory-test-dataattribute-to-load-data-from-json-files/">Creating a custom xUnit theory test DataAttribute to load data from JSON files</see>
+// by Andrew Lock and <see href="https://www.ankursheel.com/blog/load-test-data-json-file-xunit-tests">How to load test data from a JSON file for xUnit tests</see>
+// by Ankur Sheel.
+
+
 /// <summary>
 /// xUnit theory data provider from json file.
-/// Modelled after <see href="https://andrewlock.net/creating-a-custom-xunit-theory-test-dataattribute-to-load-data-from-json-files/">Creating a custom xUnit theory test DataAttribute to load data from JSON files</see>
-/// by Andrew Lock and <see href="https://www.ankursheel.com/blog/load-test-data-json-file-xunit-tests">How to load test data from a JSON file for xUnit tests</see>
-/// by Ankur Sheel.
-/// 
-/// The JSON file or a property in the JSON file is expedted to be an object array.
+/// Environment variable TEST_DATA_PREFIX value is added to the defined filename when loading the test data file.
+///
+/// The JSON file or a property in the JSON file is expected to be an object array.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 public class JsonFileDataAttribute : DataAttribute
 {
+    /// <summary>
+    /// Environment variable name for test data file prefix. The value of this environment variable is added to the specified test data filename before
+    /// loading the data. This is used to load different test data file to assignment evaluation tests.
+    /// 
+    /// If value is not specified to the environment variable then nothing is added to the filename.
+    /// </summary>
+    public const string EnvVarTestDataPrefix = "TEST_DATA_PREFIX";
     private readonly string _filePath;
 
     private readonly string? _propertyName;
@@ -29,7 +39,8 @@ public class JsonFileDataAttribute : DataAttribute
     private readonly Type _resultType;
 
     /// <summary>
-    /// Initialize the JSON test data
+    /// Initialize the JSON test data.
+    /// Environment variable TEST_DATA_PREFIX value is added to the value of <paramref name="filePath"/> when loading the test data file.
     /// </summary>
     /// <param name="filePath"></param>
     /// <param name="dataType"></param>
@@ -42,7 +53,8 @@ public class JsonFileDataAttribute : DataAttribute
     }
 
     /// <summary>
-    /// Initialize the JSON test data
+    /// Initialize the JSON test data.
+    /// Environment variable TEST_DATA_PREFIX value is added to the value of <paramref name="filePath"/> when loading the test data file.
     /// </summary>
     /// <param name="filePath"></param>
     /// <param name="propertyName"></param>
@@ -71,9 +83,9 @@ public class JsonFileDataAttribute : DataAttribute
         var parameters = testMethod.GetParameters();
 
         // Get the absolute path to the JSON file
-        var path = Path.IsPathRooted(_filePath)
-            ? _filePath
-            : Path.GetRelativePath(Directory.GetCurrentDirectory(), _filePath);
+        var path = Path.IsPathRooted($"{Environment.GetEnvironmentVariable(EnvVarTestDataPrefix)}{_filePath}")
+            ? $"{Environment.GetEnvironmentVariable(EnvVarTestDataPrefix)}{_filePath}"
+            : Path.GetRelativePath(Directory.GetCurrentDirectory(), $"{Environment.GetEnvironmentVariable(EnvVarTestDataPrefix)}{_filePath}");
 
         if (!File.Exists(path))
         {

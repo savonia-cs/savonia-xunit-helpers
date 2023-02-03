@@ -9,6 +9,7 @@ namespace Savonia.xUnit.Helpers;
 
 /// <summary>
 /// xUnit theory data provider from csv file.
+/// Environment variable TEST_DATA_PREFIX value is added to the defined filename when loading the test data file.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 public sealed class CsvDataAttribute : DataAttribute
@@ -27,6 +28,7 @@ public sealed class CsvDataAttribute : DataAttribute
 
     /// <summary>
     /// Default constructor to initialize the test with CSV test data.
+    /// Environment variable TEST_DATA_PREFIX value is added to the value of <paramref name="fileName"/> when loading the test data file.
     /// </summary>
     /// <param name="fileName"></param>
     /// <param name="delimeter"></param>
@@ -51,7 +53,7 @@ public sealed class CsvDataAttribute : DataAttribute
         }
 
         ParameterInfo[] pars = testMethod.GetParameters();
-        return DataSource(FileName, pars.Select(par => par.ParameterType).ToArray());
+        return DataSource($"{Environment.GetEnvironmentVariable(JsonFileDataAttribute.EnvVarTestDataPrefix)}{FileName}", pars.Select(par => par.ParameterType).ToArray());
     }
 
     private IEnumerable<object[]> DataSource(string fileName, Type[] parameterTypes)
