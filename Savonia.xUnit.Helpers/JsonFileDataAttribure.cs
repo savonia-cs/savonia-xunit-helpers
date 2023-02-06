@@ -83,9 +83,10 @@ public class JsonFileDataAttribute : DataAttribute
         var parameters = testMethod.GetParameters();
 
         // Get the absolute path to the JSON file
-        var path = Path.IsPathRooted($"{Environment.GetEnvironmentVariable(EnvVarTestDataPrefix)}{_filePath}")
-            ? $"{Environment.GetEnvironmentVariable(EnvVarTestDataPrefix)}{_filePath}"
-            : Path.GetRelativePath(Directory.GetCurrentDirectory(), $"{Environment.GetEnvironmentVariable(EnvVarTestDataPrefix)}{_filePath}");
+        var testDataPrefix = Environment.GetEnvironmentVariable(EnvVarTestDataPrefix);
+        var path = Path.IsPathRooted($"{testDataPrefix}{_filePath}")
+            ? $"{testDataPrefix}{_filePath}"
+            : Path.GetRelativePath(Directory.GetCurrentDirectory(), $"{testDataPrefix}{_filePath}");
 
         if (!File.Exists(path))
         {

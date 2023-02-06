@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Xunit.Abstractions;
 
 namespace Savonia.xUnit.Helpers;
 
@@ -16,13 +17,24 @@ public abstract class ConsoleAppPrivateMainTestBase : ConsoleAppTestBase
     /// Constructor requires the type of the class that contains the Main method to be executed for the tests.
     /// </summary>
     /// <param name="consoleAppType">Type of the class with the Main method</param>
-    public ConsoleAppPrivateMainTestBase(Type consoleAppType)
+    public ConsoleAppPrivateMainTestBase(Type consoleAppType) : this(consoleAppType, null)
+    {
+    }
+
+    /// <summary>
+    /// Constructor requires the type of the class that contains the Main method to be executed for the tests.
+    /// Enables test output capturing via <see cref="ITestOutputHelper" />.
+    /// </summary>
+    /// <param name="consoleAppType"></param>
+    /// <param name="output"></param>
+    /// <returns></returns>
+    public ConsoleAppPrivateMainTestBase(Type consoleAppType, ITestOutputHelper? output) : base(output)
     {
         Type type = consoleAppType;
         prog = Activator.CreateInstance(type);
         method = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Where(x => x.Name == "Main" && x.IsStatic).First();
     }
-
+    
     /// <summary>
     /// Execute the Main method with parameters.
     /// </summary>
