@@ -97,6 +97,17 @@ public static class StringHelpers
     }
 
     /// <summary>
+    /// Converts params data to a string using <see cref="Environment.NewLine" /> as separator.
+    /// Can be used as a standard input to console apps.
+    /// </summary>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    public static string ToStandardInput(params object[] args)
+    {
+        return args.AsString(Environment.NewLine);
+    }
+
+    /// <summary>
     /// Converts a string to lines.
     /// </summary>
     /// <param name="str">Source string to be splitted to lines</param>
@@ -129,5 +140,16 @@ public static class StringHelpers
             },
             RegexOptions.Singleline);
         return filtered;
+    }
+
+    /// <summary>
+    /// Sanitizes <see cref="StringWriter" /> content. Reads the content as string and removes trailing new lines. Then changes remaining new lines 
+    /// to '\n'.
+    /// </summary>
+    /// <param name="sw"></param>
+    /// <returns></returns>
+    public static string Sanitize(this StringWriter sw)
+    {
+        return sw.ToString().TrimEndNewLines().SetUniversalNewLines();
     }
 }
