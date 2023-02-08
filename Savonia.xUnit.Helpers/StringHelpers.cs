@@ -152,4 +152,14 @@ public static class StringHelpers
     {
         return sw.ToString().TrimEndNewLines().SetUniversalNewLines();
     }
+
+    /// <summary>
+    /// Returns true when a string has value. A string containing only white space characters is considered to not have value (i.e. will return false).
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static bool HasValue(this string str)
+    {
+        return false == string.IsNullOrWhiteSpace(str);
+    }
 }
