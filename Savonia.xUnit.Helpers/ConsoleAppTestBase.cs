@@ -29,7 +29,7 @@ public abstract class ConsoleAppTestBase
     public ConsoleAppTestBase(ITestOutputHelper output)
     {
         _output = output;
-        var testDataPrefix = Environment.GetEnvironmentVariable(JsonFileDataAttribute.EnvVarTestDataPrefix);
+        var testDataPrefix = Environment.GetEnvironmentVariable(TestBaseDataAttribute.EnvVarTestDataPrefix);
         if (false == string.IsNullOrEmpty(testDataPrefix))
         {
             WriteLine($"\n*** Running tests with test data prefix '{testDataPrefix}' ***\n");

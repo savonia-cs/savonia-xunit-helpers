@@ -21,17 +21,8 @@ namespace Savonia.xUnit.Helpers;
 /// The JSON file or a property in the JSON file is expected to be an object array.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-public class JsonFileDataAttribute : DataAttribute
+public class JsonFileDataAttribute : TestBaseDataAttribute
 {
-    /// <summary>
-    /// Environment variable name for test data file prefix. The value of this environment variable is added to the specified test data filename before
-    /// loading the data. This is used to load different test data file to assignment evaluation tests.
-    /// 
-    /// If value is not specified to the environment variable then nothing is added to the filename.
-    /// </summary>
-    public const string EnvVarTestDataPrefix = "TEST_DATA_PREFIX";
-    private readonly string _filePath;
-
     private readonly string? _propertyName;
 
     private readonly Type _dataType;
@@ -45,9 +36,8 @@ public class JsonFileDataAttribute : DataAttribute
     /// <param name="filePath"></param>
     /// <param name="dataType"></param>
     /// <param name="resultType"></param>
-    public JsonFileDataAttribute(string filePath, Type dataType, Type resultType)
+    public JsonFileDataAttribute(string filePath, Type dataType, Type resultType) : base(filePath)
     {
-        _filePath = filePath;
         _dataType = dataType;
         _resultType = resultType;
     }
@@ -60,9 +50,8 @@ public class JsonFileDataAttribute : DataAttribute
     /// <param name="propertyName"></param>
     /// <param name="dataType"></param>
     /// <param name="resultType"></param>
-    public JsonFileDataAttribute(string filePath, string propertyName, Type dataType, Type resultType)
+    public JsonFileDataAttribute(string filePath, string propertyName, Type dataType, Type resultType) : base(filePath)
     {
-        _filePath = filePath;
         _propertyName = propertyName;
         _dataType = dataType;
         _resultType = resultType;
@@ -82,19 +71,14 @@ public class JsonFileDataAttribute : DataAttribute
 
         var parameters = testMethod.GetParameters();
 
-        // Get the absolute path to the JSON file
-        var testDataPrefix = Environment.GetEnvironmentVariable(EnvVarTestDataPrefix);
-        var path = Path.IsPathRooted($"{testDataPrefix}{_filePath}")
-            ? $"{testDataPrefix}{_filePath}"
-            : Path.GetRelativePath(Directory.GetCurrentDirectory(), $"{testDataPrefix}{_filePath}");
-
+        string path = GetTestDataFilePath();
         if (!File.Exists(path))
         {
-            throw new ArgumentException($"Could not find file at path: {path}");
+            throw new FileNotFoundException(path);
         }
 
         // Load the file
-        var fileData = File.ReadAllText(_filePath);
+        var fileData = File.ReadAllText(path);
 
         if (string.IsNullOrEmpty(_propertyName))
         //whole file is the data

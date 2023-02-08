@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Savonia.xUnit.Helpers", "Savonia.xUnit.Helpers\Savonia.xUnit.Helpers.csproj", "{FCA020BD-8BE2-429A-BA5B-91A7591EDE00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Savonia.xUnit.Helpers.Tests", "Savonia.xUnit.Helpers.Tests\Savonia.xUnit.Helpers.Tests.csproj", "{98D646AF-072A-4050-948C-20BCDC72E7CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,5 +24,9 @@ Global
 		{FCA020BD-8BE2-429A-BA5B-91A7591EDE00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCA020BD-8BE2-429A-BA5B-91A7591EDE00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCA020BD-8BE2-429A-BA5B-91A7591EDE00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98D646AF-072A-4050-948C-20BCDC72E7CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98D646AF-072A-4050-948C-20BCDC72E7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98D646AF-072A-4050-948C-20BCDC72E7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98D646AF-072A-4050-948C-20BCDC72E7CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

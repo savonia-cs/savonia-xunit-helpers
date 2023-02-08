@@ -1,8 +1,7 @@
 ﻿using System.Data;
 using System.Reflection;
+using NReco.Csv;
 using Xunit.Sdk;
-using CsvHelper;
-using CsvHelper.Configuration;
 using System.Globalization;
 
 namespace Savonia.xUnit.Helpers;
@@ -10,34 +9,52 @@ namespace Savonia.xUnit.Helpers;
 /// <summary>
 /// xUnit theory data provider from csv file.
 /// Environment variable TEST_DATA_PREFIX value is added to the defined filename when loading the test data file.
+/// 
+/// For numeric values in the CSV file use invariant culture format (e.g. dot (.) as decimal separator like 3.14)
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-public sealed class CsvDataAttribute : DataAttribute
+public sealed class CsvDataAttribute : TestBaseDataAttribute
 {
-    /// <summary>
-    /// Test data file name
-    /// </summary>
-    /// <value></value>
-    public string FileName { get; private set; }
-    CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
-    {
-        Delimiter = ";",
-        HasHeaderRecord = true,
-        Quote = '"',
-    };
+    private readonly string _delimeter = ",";
+    private readonly bool _hasHeader = true;
 
     /// <summary>
-    /// Default constructor to initialize the test with CSV test data.
+    /// Constructor to initialize the test with CSV test data containing comma (,) separated values with header record.
     /// Environment variable TEST_DATA_PREFIX value is added to the value of <paramref name="fileName"/> when loading the test data file.
+    /// 
+    /// For numeric values in the CSV file use invariant culture format (e.g. dot (.) as decimal separator like 3.14)
+    /// </summary>
+    /// <param name="fileName"></param>
+    public CsvDataAttribute(string fileName) : base(fileName)
+    {
+    }
+
+    /// <summary>
+    /// Constructor to initialize the test with CSV test data containing comma (,) separated values and header record info.
+    /// Environment variable TEST_DATA_PREFIX value is added to the value of <paramref name="fileName"/> when loading the test data file.
+    /// 
+    /// For numeric values in the CSV file use invariant culture format (e.g. dot (.) as decimal separator like 3.14)
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <param name="hasHeaderRow"></param>
+    public CsvDataAttribute(string fileName, bool hasHeaderRow) : base(fileName)
+    {
+        _hasHeader = hasHeaderRow;
+    }
+
+    /// <summary>
+    /// Constructor to initialize the test with CSV test data, data delimeter and header record info.
+    /// Environment variable TEST_DATA_PREFIX value is added to the value of <paramref name="fileName"/> when loading the test data file.
+    /// 
+    /// For numeric values in the CSV file use invariant culture format (e.g. dot (.) as decimal separator like 3.14)
     /// </summary>
     /// <param name="fileName"></param>
     /// <param name="delimeter"></param>
     /// <param name="hasHeaderRow"></param>
-    public CsvDataAttribute(string fileName, string delimeter, bool hasHeaderRow)
+    public CsvDataAttribute(string fileName, string delimeter, bool hasHeaderRow) : base(fileName)
     {
-        FileName = fileName;
-        config.Delimiter = delimeter;
-        config.HasHeaderRecord = hasHeaderRow;
+        _delimeter = delimeter;
+        _hasHeader = hasHeaderRow;
     }
 
     /// <summary>
@@ -53,39 +70,37 @@ public sealed class CsvDataAttribute : DataAttribute
         }
 
         ParameterInfo[] pars = testMethod.GetParameters();
-        return DataSource($"{Environment.GetEnvironmentVariable(JsonFileDataAttribute.EnvVarTestDataPrefix)}{FileName}", pars.Select(par => par.ParameterType).ToArray());
+        return GetData(GetTestDataFilePath(), pars.Select(par => par.ParameterType).ToArray());
     }
 
-    private IEnumerable<object[]> DataSource(string fileName, Type[] parameterTypes)
+    private IEnumerable<object[]> GetData(string fileName, Type[] parameterTypes)
     {
         if (false == System.IO.File.Exists(fileName))
         {
             throw new FileNotFoundException(fileName);
         }
-        using (var reader = new StreamReader(fileName))
-        using (var csv = new CsvReader(reader, config))
+        
+        using (var sr = new StreamReader(File.OpenRead(fileName)))
         {
-            // Do any configuration to `CsvReader` before creating CsvDataReader.
-            using (var dr = new CsvDataReader(csv))
+            var csvReader = new CsvReader(sr, _delimeter);
+            if (_hasHeader)
             {
-                var dt = new DataTable();
-                dt.Load(dr);
-
-                foreach (DataRow row in dt.Rows)
+                // skip header row
+                csvReader.Read();
+            }
+            while (csvReader.Read())
+            {
+                string[] row = new string[csvReader.FieldsCount];                
+                for (int i = 0; i < csvReader.FieldsCount; i++)
                 {
-                    yield return ConvertParameters(row.ItemArray, parameterTypes);
+                    row[i] = csvReader[i];
                 }
+                yield return ConvertParameters(row, parameterTypes);
             }
         }
     }
 
-    private static string GetFullFilename(string filename)
-    {
-        string executable = new Uri(Assembly.GetExecutingAssembly().Location).LocalPath;
-        return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(executable), filename));
-    }
-
-    private static object[] ConvertParameters(object[] values, Type[] parameterTypes)
+    private static object[] ConvertParameters(string[] values, Type[] parameterTypes)
     {
         object[] result = new object[values.Length];
 
@@ -99,18 +114,47 @@ public sealed class CsvDataAttribute : DataAttribute
     /// Converts a parameter to its destination parameter type, if necessary.
     /// </summary>
     /// <param name="parameter">The parameter value</param>
-    /// <param name="parameterType">The destination parameter type (null if not known)</param>
+    /// <param name="type">The destination parameter type (null if not known)</param>
     /// <returns>The converted parameter value</returns>
-    private static object ConvertParameter(object parameter, Type parameterType)
+    private static object ConvertParameter(string parameter, Type? type)
     {
-        if ((parameter is double || parameter is float) &&
-            (parameterType == typeof(int) || parameterType == typeof(int?)))
+        if (null == type)
         {
-            int intValue;
-            string floatValueAsString = parameter.ToString();
-
-            if (Int32.TryParse(floatValueAsString, out intValue))
-                return intValue;
+            return parameter;
+        }
+        if (type.Equals(typeof(string)))
+        {
+            return parameter;
+        }
+        else if (type.Equals(typeof(int)) || type.Equals(typeof(int?)))
+        {
+            if (int.TryParse(parameter, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
+                return value;
+        }
+        else if (type.Equals(typeof(double)) || type.Equals(typeof(double?)))
+        {
+            if (double.TryParse(parameter, NumberStyles.Number, CultureInfo.InvariantCulture, out double value))
+                return value;
+        }
+        else if (type.Equals(typeof(float)) || type.Equals(typeof(float?)))
+        {
+            if (float.TryParse(parameter, NumberStyles.Number, CultureInfo.InvariantCulture, out float value))
+                return value;
+        }
+        else if (type.Equals(typeof(long)) || type.Equals(typeof(long?)))
+        {
+            if (long.TryParse(parameter, NumberStyles.Integer, CultureInfo.InvariantCulture, out long value))
+                return value;
+        }
+        else if (type.Equals(typeof(decimal)) || type.Equals(typeof(decimal?)))
+        {
+            if (decimal.TryParse(parameter, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value))
+                return value;
+        }
+        else if (type.Equals(typeof(bool)) || type.Equals(typeof(bool?)))
+        {
+            if (bool.TryParse(parameter, out bool value))
+                return value;
         }
 
         return parameter;

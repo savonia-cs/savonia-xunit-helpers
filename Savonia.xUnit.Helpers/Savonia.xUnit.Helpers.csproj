@@ -8,7 +8,7 @@
 		<PackageId>Savonia.xUnit.Helpers</PackageId>
 		<IsPackable>true</IsPackable>
 		<PackageOutputPath>./nupkg</PackageOutputPath>
-		<Version>0.0.27</Version>
+		<Version>0.0.29</Version>
 		<Authors>Mikko Pääkkönen</Authors>
 		<Company>Savonia University of Applied Sciences</Company>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -21,9 +21,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CsvHelper" Version="30.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="xunit" Version="2.4.2" />
+		<PackageReference Include="NReco.Csv" Version="1.0.1" />
 	</ItemGroup>
 
 
