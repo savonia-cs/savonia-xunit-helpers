@@ -8,7 +8,7 @@
 		<PackageId>Savonia.xUnit.Helpers</PackageId>
 		<IsPackable>true</IsPackable>
 		<PackageOutputPath>./nupkg</PackageOutputPath>
-		<Version>0.0.31</Version>
+		<Version>0.1.0</Version>
 		<Authors>Mikko Pääkkönen</Authors>
 		<Company>Savonia University of Applied Sciences</Company>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>

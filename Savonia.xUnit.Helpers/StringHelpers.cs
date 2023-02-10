@@ -71,7 +71,7 @@ public static class StringHelpers
     }
 
     /// <summary>
-    /// Converts enumerable data to a string where values are separated by <paramref name="separator"/>.
+    /// Converts enumerable data to a string where <paramref name="data"/> values are separated by <paramref name="separator"/>.
     /// </summary>
     /// <param name="data">Source data</param>
     /// <param name="separator">Separator in a resulting string</param>
@@ -91,7 +91,7 @@ public static class StringHelpers
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public static string AsString<T>(this IEnumerable<T> data)
+    public static string ToStandardInput<T>(this IEnumerable<T> data)
     {
         return data.AsString(Environment.NewLine);
     }
@@ -144,7 +144,7 @@ public static class StringHelpers
 
     /// <summary>
     /// Sanitizes <see cref="StringWriter" /> content. Reads the content as string and removes trailing new lines. Then changes remaining new lines 
-    /// to '\n'.
+    /// to '\n' and removes possible carriage returns '\r'.
     /// </summary>
     /// <param name="sw"></param>
     /// <returns></returns>
