@@ -8,7 +8,7 @@
 		<PackageId>Savonia.xUnit.Helpers</PackageId>
 		<IsPackable>true</IsPackable>
 		<PackageOutputPath>./nupkg</PackageOutputPath>
-		<Version>0.1.0</Version>
+		<Version>0.2.0</Version>
 		<Authors>Mikko Pääkkönen</Authors>
 		<Company>Savonia University of Applied Sciences</Company>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -21,13 +21,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="xunit" Version="2.4.2" />
 		<PackageReference Include="NReco.Csv" Version="1.0.1" />
+
+		<PackageReference Include="AngleSharp" Version="1.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.15" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+		<PackageReference Include="Moq" Version="4.18.4" />
 	</ItemGroup>
 
 
 	<ItemGroup>
-		<None Include="../README.md" Pack="true" PackagePath="\"/>
+		<None Include="../README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 </Project>
