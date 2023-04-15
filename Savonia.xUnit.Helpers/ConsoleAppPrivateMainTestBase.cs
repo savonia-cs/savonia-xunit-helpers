@@ -6,9 +6,9 @@ namespace Savonia.xUnit.Helpers;
 
 /// <summary>
 /// Abstract base class for Console App testing with private class and private Main method. Uses reflection to execute the Main method.
-/// This class inherits <see cref="ConsoleAppTestBase" />.
+/// This class inherits <see cref="AppTestBase" />.
 /// </summary>
-public abstract class ConsoleAppPrivateMainTestBase : ConsoleAppTestBase
+public abstract class ConsoleAppPrivateMainTestBase : AppTestBase
 {
     private object? prog;
     MethodInfo method;

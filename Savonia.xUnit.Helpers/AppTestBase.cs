@@ -8,7 +8,7 @@ namespace Savonia.xUnit.Helpers;
 /// <summary>
 /// Abstract base class for Console App testing.
 /// </summary>
-public abstract class ConsoleAppTestBase
+public abstract class AppTestBase
 {
     /// <summary>
     /// Use to write test output.
@@ -18,7 +18,7 @@ public abstract class ConsoleAppTestBase
     /// <summary>
     /// Default constructor. Does not enable test output capturing.
     /// </summary>
-    public ConsoleAppTestBase()
+    public AppTestBase()
     {
     }
 
@@ -26,13 +26,36 @@ public abstract class ConsoleAppTestBase
     /// Enable test output capturing.
     /// </summary>
     /// <param name="output"></param>
-    public ConsoleAppTestBase(ITestOutputHelper output)
+    public AppTestBase(ITestOutputHelper? output)
     {
         _output = output;
         var testDataPrefix = Environment.GetEnvironmentVariable(TestBaseDataAttribute.EnvVarTestDataPrefix);
         if (false == string.IsNullOrEmpty(testDataPrefix))
         {
             WriteLine($"\n*** Running tests with test data prefix '{testDataPrefix}' ***\n");
+        }
+    }
+
+    /// <summary>
+    /// Content files to replace with real test files if they exist. 
+    /// Enables test output capturing via <see cref="ITestOutputHelper" />.
+    /// </summary>
+    /// <param name="contentFiles"></param>
+    /// <param name="output"></param>
+    /// <returns></returns>
+    public AppTestBase(string[] contentFiles, ITestOutputHelper? output) : this(output)
+    {
+        var testDataPrefix = Environment.GetEnvironmentVariable(TestBaseDataAttribute.EnvVarTestDataPrefix);
+        if (false == string.IsNullOrEmpty(testDataPrefix))
+        {
+            WriteLine($"\n*** Replacing content files ***\n");
+            foreach (var contentFile in contentFiles)
+            {
+                if (File.Exists($"{testDataPrefix}{contentFile}"))
+                {
+                    File.Copy($"{testDataPrefix}{contentFile}", contentFile, true);
+                }
+            }
         }
     }
 
