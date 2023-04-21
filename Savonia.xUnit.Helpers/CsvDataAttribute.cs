@@ -1,8 +1,7 @@
-﻿using System.Data;
-using System.Reflection;
-using NReco.Csv;
-using Xunit.Sdk;
+﻿using NReco.Csv;
+using System.Data;
 using System.Globalization;
+using System.Reflection;
 
 namespace Savonia.xUnit.Helpers;
 
@@ -15,7 +14,7 @@ namespace Savonia.xUnit.Helpers;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 public sealed class CsvDataAttribute : TestBaseDataAttribute
 {
-    private readonly string _delimeter = ",";
+    private readonly string _delimiter = ",";
     private readonly bool _hasHeader = true;
 
     /// <summary>
@@ -43,17 +42,17 @@ public sealed class CsvDataAttribute : TestBaseDataAttribute
     }
 
     /// <summary>
-    /// Constructor to initialize the test with CSV test data, data delimeter and header record info.
+    /// Constructor to initialize the test with CSV test data, data delimiter and header record info.
     /// Environment variable TEST_DATA_PREFIX value is added to the value of <paramref name="fileName"/> when loading the test data file.
     /// 
     /// For numeric values in the CSV file use invariant culture format (e.g. dot (.) as decimal separator like 3.14)
     /// </summary>
     /// <param name="fileName"></param>
-    /// <param name="delimeter"></param>
+    /// <param name="delimiter"></param>
     /// <param name="hasHeaderRow"></param>
-    public CsvDataAttribute(string fileName, string delimeter, bool hasHeaderRow) : base(fileName)
+    public CsvDataAttribute(string fileName, string delimiter, bool hasHeaderRow) : base(fileName)
     {
-        _delimeter = delimeter;
+        _delimiter = delimiter;
         _hasHeader = hasHeaderRow;
     }
 
@@ -82,7 +81,7 @@ public sealed class CsvDataAttribute : TestBaseDataAttribute
         
         using (var sr = new StreamReader(File.OpenRead(fileName)))
         {
-            var csvReader = new CsvReader(sr, _delimeter);
+            var csvReader = new CsvReader(sr, _delimiter);
             if (_hasHeader)
             {
                 // skip header row
@@ -154,6 +153,11 @@ public sealed class CsvDataAttribute : TestBaseDataAttribute
         else if (type.Equals(typeof(bool)) || type.Equals(typeof(bool?)))
         {
             if (bool.TryParse(parameter, out bool value))
+                return value;
+        }
+        else if (type.Equals(typeof(DateTime)) || type.Equals(typeof(DateTime?)))
+        {
+            if (DateTime.TryParse(parameter, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTime value))
                 return value;
         }
 

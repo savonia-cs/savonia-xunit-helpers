@@ -1,12 +1,10 @@
-﻿
-using System.IO;
-using System.Text;
+﻿using System.Text;
 using Xunit.Abstractions;
 
 namespace Savonia.xUnit.Helpers;
 
 /// <summary>
-/// Abstract base class for Console App testing.
+/// Abstract base class for App testing.
 /// </summary>
 public abstract class AppTestBase
 {
@@ -74,7 +72,8 @@ public abstract class AppTestBase
     /// <summary>
     /// Write test output via <see cref="ITestOutputHelper" />.
     /// </summary>
-    /// <param name="message"></param>
+    /// <param name="format"></param>
+    /// <param name="args"></param>
     protected void WriteLine(string format, params object[] args)
     {
         if (null != _output)
