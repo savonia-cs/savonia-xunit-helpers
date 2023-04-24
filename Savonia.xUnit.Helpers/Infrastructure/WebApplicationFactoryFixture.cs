@@ -17,9 +17,15 @@ public class WebApplicationFactoryFixture<T> : WebApplicationFactory<T> where T 
     public WebApplicationFactoryFixture()
     {
     }
-    private string hostUrl = string.Empty;
+    private string? hostUrl = null;
     /// <summary>
     /// Get or set test server url. When this is set then Kestrel server is used as a test server.
+    /// Set the HostUrl before before creating client (<see cref="WebApplicationFactory{T}.CreateClient()"/>)
+    /// or getting the test server reference (<see cref="WebApplicationFactory{T}.Server"/>).
+    /// 
+    /// One of the following is required for the Kestrel server to be used:
+    /// - call <see cref="WebApplicationFactory{T}.CreateClient()"/> or <see cref="WebApplicationFactory{T}.CreateDefaultClient()"/>
+    /// - call <see cref="WebApplicationFactory{T}.Server"/>
     /// </summary>
     public string HostUrl
     {
