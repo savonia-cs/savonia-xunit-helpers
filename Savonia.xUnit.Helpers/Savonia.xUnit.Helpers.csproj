@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<RootNamespace>Savonia.xUnit.Helpers</RootNamespace>
 		<PackageId>Savonia.xUnit.Helpers</PackageId>
 		<IsPackable>true</IsPackable>
 		<PackageOutputPath>./nupkg</PackageOutputPath>
-		<Version>0.3.10</Version>
+		<Version>0.4.1</Version>
 		<Authors>Mikko Pääkkönen</Authors>
 		<Company>Savonia University of Applied Sciences</Company>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -22,12 +22,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="xunit" Version="2.4.2" />
-		<PackageReference Include="NReco.Csv" Version="1.0.1" />
+		<PackageReference Include="xunit" Version="2.6.2" />
+		<PackageReference Include="NReco.Csv" Version="1.0.2" />
 
 		<PackageReference Include="AngleSharp" Version="0.17.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.16" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>
