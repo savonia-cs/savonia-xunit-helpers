@@ -11,7 +11,7 @@ public class TestBaseDataAttributeTests : IDisposable
     public TestBaseDataAttributeTests(ITestOutputHelper output)
     {
         _output = output;
-        string? existingTestDataPrefix = Environment.GetEnvironmentVariable(TestBaseDataAttribute.EnvVarTestDataPrefix);
+        _existingTestDataPrefix = Environment.GetEnvironmentVariable(TestBaseDataAttribute.EnvVarTestDataPrefix);
     }
 
     [Theory]
