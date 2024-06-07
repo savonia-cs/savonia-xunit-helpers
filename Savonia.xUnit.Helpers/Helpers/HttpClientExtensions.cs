@@ -48,7 +48,7 @@ public static class HttpClientExtensions
         var submitRequest = form.GetSubmission(submitButton);
         if (null == submitRequest)
         {
-            throw new NullReferenceException($"Could not create submit request on form {form.BaseUri} with submit button {submitButton}");
+            throw new NullReferenceException($"Could not create submit request on form {form.BaseUri} with submit button {submitButton.OuterHtml}. Check that proper values in expected format are provided for input elements and the input elements are configured for the provided values. Dates and times are usually the problem.");
         }
         var target = (Uri)submitRequest.Target;
         if (submitButton.HasAttribute("formaction"))
