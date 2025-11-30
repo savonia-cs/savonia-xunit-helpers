@@ -14,4 +14,4 @@ CSV and JSON data providers reads environment variable named TEST_DATA_PREFIX an
 
 ## Note about web testing
 
-This package references specific version of AngleSharp to be compatible with [bunit](https://www.nuget.org/packages/bunit). bunit depends on AngleSharp.Diffing which in turn depends on [AngleSharp.Css](https://www.nuget.org/packages/AngleSharp.Css) which has dependency on AngleSharp >= 0.17.0 and < 0.18.0.
+This package references specific version of AngleSharp to be compatible with [bunit](https://www.nuget.org/packages/bunit). bunit depends on AngleSharp.Diffing which in turn depends on [AngleSharp.Css](https://www.nuget.org/packages/AngleSharp.Css) >= 1.0.0-beta.144 which has dependency on AngleSharp >= 1.0.0 and < 2.0.0.
